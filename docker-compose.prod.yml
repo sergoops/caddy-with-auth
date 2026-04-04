@@ -1,0 +1,34 @@
+services:
+    caddy:
+        image: ghcr.io/sergoops/caddy-with-auth:latest
+        container_name: 'caddy'
+        hostname: caddy
+        restart: always
+        environment:
+            - AUTH_TOKEN_LIFETIME=3600
+            - JWT_SHARED_KEY=GENERATE IT WITH OPENSSL
+            - REMNAWAVE_PANEL_DOMAIN=PANEL DOMAIN WITH PROTO
+            - REMNAWAVE_CUSTOM_LOGIN_ROUTE=ROUTE
+            - AUTHP_ADMIN_USER=USER
+            - AUTHP_ADMIN_EMAIL=MAIL
+            - AUTHP_ADMIN_SECRET=PASS
+        ports:
+            - '0.0.0.0:443:443'
+            - '0.0.0.0:80:80'
+        networks:
+            - remnawave-network
+        volumes:
+            - ./Caddyfile:/etc/caddy/Caddyfile
+            - caddy-ssl-data:/data
+
+networks:
+    remnawave-network:
+        name: remnawave-network
+        driver: bridge
+        external: true
+
+volumes:
+    caddy-ssl-data:
+        driver: local
+        external: false
+        name: caddy-ssl-data
